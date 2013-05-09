@@ -1,3 +1,29 @@
+<?php
+
+$curl = curl_init("http://api.4chan.org/b/catalog.json");
+curl_setopt ($curl, CURLOPT_RETURNTRANSFER, true);
+$result = curl_exec($curl);
+curl_close($curl);
+$result = json_decode($result);
+$pages = count($result);
+$image_threads = array();
+for($i=0; $i<$pages; $i++){
+	for($j=0; $j<count($result[$i]->threads); $j++){
+		$threads = $result[$i]->threads;
+/* 		print_r($threads[$j]); */
+		if($threads[$j]->images > 20){
+			array_push($image_threads, $threads[$j]);
+		}
+	}
+}
+$rand_1 = rand(0, count($image_threads));
+$rand_2 = rand(0, count($image_threads));
+$player_1 = $image_threads[$rand_1]->no;
+$player_2 = $image_threads[$rand_2]->no;
+
+sleep(1);
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -32,7 +58,12 @@
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
 	<script>
 		jQuery(document).ready(function($){
-			state = 0;
+			$.ajax({
+				url:"http://api.4chan.org/b/catalog.json",
+				success: function(data){
+								var thread1 = "http://api.4chan.org/b/res/<?=$player_1?>.json";
+			var thread2 = "http://api.4chan.org/b/res/<?=$player_2?>.json";
+			var state = 0;
 			var ws = new WebSocket('ws://localhost:8080');
 			ws.onopen = function() {
 				$('#twitter-word-form').submit(function(){
@@ -49,7 +80,10 @@
 						waitForimages();
 					}
 				}
-			};		
+			};
+				}
+			});
+			
 			function waitForimages(){
 				$('#status').html("WAITING FOR IMAGES FROM PLAYERS.");
 			}
