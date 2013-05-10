@@ -26,46 +26,34 @@
 	</form>
 	<div id="tweet"></div>
 	<div id="status"></div>
+	<div class="images"></div>
 </div>
 
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
 	<script>
-		jQuery(document).ready(function($){
-			
-			
-			
-			
-			$.ajax({
-				url:"http://api.4chan.org/b/catalog.json",
-				success: function(data){
-					var thread1 = "http://api.4chan.org/b/res/????.json";
-					var thread2 = "http://api.4chan.org/b/res/????.json";
-					var state = 0;
-					var ws = new WebSocket('ws://localhost:8080');
-					ws.onopen = function() {
-						$('#twitter-word-form').submit(function(){
-							ws.send($('#twitter-word').val());
-							return false;
-						});
-					};
-					ws.onmessage = function(data, flags) {
-						if(state==0){
-							$('#tweet').html('<span class="tweet-user">@' + JSON.parse(data.data).from_user + '</span><span class="tweet-time">' + JSON.parse(data.data).created_at + '</span><p class="tweet-text">' + JSON.parse(data.data).text + '</p>');
-							state++;
-						} else if (state == 1){
-							if(data.data=="waiting"){
-								waitForimages();
-							}
-						}
-					};
-				}
+	
+	jQuery(document).ready(function($){
+		var ws = new WebSocket('ws://localhost:8080');
+		ws.onopen = function() {
+			$('#twitter-word-form').submit(function(){
+				ws.send($('#twitter-word').val());
+				return false;
 			});
-			
-			function waitForimages(){
-				$('#status').html("WAITING FOR IMAGES FROM PLAYERS.");
+		};
+		ws.onmessage = function(data, flags) {
+			var obj = JSON.parse(data.data);
+			console.log(obj);
+			if(obj.tweet != null){
+				$('#tweet').html('<span class="tweet-user">@' + JSON.parse(JSON.parse(data.data).tweet).from_user + '</span><span class="tweet-time">' + JSON.parse(JSON.parse(data.data).tweet).created_at + '</span><p class="tweet-text">' + JSON.parse(JSON.parse(data.data).tweet).text + '</p>');
+			} else {
+				$('.images').append('<img class="'+obj.class+'" src="'+obj.src+'" alt="'+obj.class+'"/>');
+				$('.images img').click(function(){
+					ws.send($(this).attr('class'));
+				});
 			}
-		});
+		};
+	});
 
 	</script>
   <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')</script>
