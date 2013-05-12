@@ -42,8 +42,8 @@
 			});
 		};
 		ws.onmessage = function(data, flags) {
+			console.log(data);
 			var obj = JSON.parse(data.data);
-			console.log(obj);
 			if(obj.tweet != null){
 				$('#tweet').html('<span class="tweet-user">@' + JSON.parse(JSON.parse(data.data).tweet).from_user + '</span><span class="tweet-time">' + JSON.parse(JSON.parse(data.data).tweet).created_at + '</span><p class="tweet-text">' + JSON.parse(JSON.parse(data.data).tweet).text + '</p>');
 			} else {

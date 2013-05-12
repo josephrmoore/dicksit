@@ -34,8 +34,9 @@
 		jQuery(document).ready(function($){
 			var ws = new WebSocket('ws://localhost:8081');
 			ws.onmessage = function(data, flags) {
+				console.log(data);
 				if(data.data == "unlocked"){
-					ws.send("OK");
+					ws.send(JSON.stringify({"message":"OK"}));
 				} else if (data.data == "winner"){
 					
 				} else if (data.data == "loser"){
@@ -46,8 +47,6 @@
 						$('.images').append('<img class="image-' + (i+1) + '" src="http://images.4chan.org/b/src/' + images[i] + '" alt="image # ' + i + '" />');
 					}
 					$('.images img').click(function(){
-						console.log($(this));
-						// console.log($(this).attr('src'));
 						ws.send(JSON.stringify({"class":$(this).attr('class'), "src": $(this).attr('src')}));
 					});
 				}
