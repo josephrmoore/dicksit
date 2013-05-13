@@ -55,10 +55,14 @@ section#player_name{
 
 section#images{
 	margin-top: 40px;
-	/*display: inline-block;*/
-	width: 100%;
-/*	border-style: dashed;
-border-width:1px;*/
+	padding: 0 100px;
+	width: 824px;
+}
+
+#images p {
+	color:#ccc;
+	font-size:40px;
+	padding:20px;
 }
 
 section#submit_button{
