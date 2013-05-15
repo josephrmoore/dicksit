@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>notDixit, online!</title>
+	<title>Dicksit&trade;</title>
 	<meta name="generator" content="TextMate http://macromates.com/">
 	<meta name="author" content="Joseph Moore">
 	<meta charset="utf-8">
@@ -22,20 +22,20 @@
   <!--[if lte IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
 
 	<div id="wrapper">
-
+		<button id="reset-game">Reset Game</button>
 		<div id="setup">
 
-			<h1>Game Not Yet Named! :(</h1>
-			<img src='images/audience-tweetbar.png' />
+			<h1 class="gamename">Dicksit<span class="tm">&trade;</span></h1>
 
 			<div id='form'>
-				<form id='twitter-word-form'>
-					<label for="twitter-word">Choose a word to dredge the murky waters of the Twitterverse:</label>
-					<input id="twitter-word" type="text" value="" />
-					<input id="submit-tweet" type="submit" value="Yes, really!" />
-				</form>
-
-				<p>Contestants, respond with an image to the following Tweet:</p>
+				<div class="form-guts">
+					<p>Choose a word to dredge the murky waters of the Twitterverse:</p>
+					<form id='twitter-word-form'>
+						<label class="off" for="twitter-word">Tweet Search Word</label>
+						<input id="twitter-word" type="text" value="" />
+						<input id="submit-tweet" type="submit" value="Yes, really!" />
+					</form>
+				</div>
 				<div id="tweet"></div>
 			</div>
 
@@ -44,17 +44,6 @@
 		<div id="images" class="images"></div>
 
 	</div>
-
-
-<div id="wrapper">
-	<form id="twitter-word-form">
-		<label for="twitter-word">Enter word:</label>
-		<input id="twitter-word" type="text" value="" />
-		<input id="submit-tweet" type="submit" value="Go." />
-	</form>
-	<div id="status"></div>
-	<div class="images"></div>
-</div>
 
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
@@ -72,14 +61,21 @@
 			console.log(data);
 			var obj = JSON.parse(data.data);
 			if(obj.tweet != null){
-				$('#tweet').html('<span class="tweet-user">@' + JSON.parse(JSON.parse(data.data).tweet).from_user + '</span><span class="tweet-time">' + JSON.parse(JSON.parse(data.data).tweet).created_at + '</span><p class="tweet-text">' + JSON.parse(JSON.parse(data.data).tweet).text + '</p>');
+				$('#tweet').html('<span class="tweet-user">@' + JSON.parse(JSON.parse(data.data).tweet).from_user + '</span><span class="tweet-text">' + JSON.parse(JSON.parse(data.data).tweet).text + '</span>');
+				$('.form-guts').addClass('off');
 			} else {
-				$('.images').append('<div class="contestant"><img class="'+obj.class+'" src="'+obj.src+'" alt="'+obj.class+'"/><p>NAME</p></div>');
+				$('.images').append('<div class="contestant"><img class="'+obj.class+'" src="'+obj.src+'" alt="'+obj.class+'"/><p class="off">NAME</p></div>');
 				$('.images img').click(function(){
 					ws.send($(this).attr('class'));
 				});
 			}
 		};
+		$('#reset-game').click(function(){
+			ws.send('reset');
+			$('.images .contestant').remove();
+			$('.form-guts').removeClass('off');
+			$('#tweet').html('');
+		});
 	});
 
 	</script>
