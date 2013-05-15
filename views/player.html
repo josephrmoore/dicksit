@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Dick</title>
+	<meta name="generator" content="TextMate http://macromates.com/">
+	<meta name="author" content="Joseph Moore">
+	<meta charset="utf-8">
+	<!-- Date: 2013-04-30 -->
+	<link href="css/player.css" rel="stylesheet" type="text/css" />
+	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Flavors|Didact+Gothic' rel='stylesheet' type='text/css'>
+	<!-- Mobile viewport optimized: h5bp.com/viewport -->
+  	<meta name="viewport" content="width=device-width">
+	<!--[if lt IE 9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+</head>
+<body>
+  <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6.
+       chromium.org/developers/how-tos/chrome-frame-getting-started -->
+  <!--[if lte IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
+
+<div id="wrapper">
+	<h1 class="gamename">Dicksit<span class="tm">&trade;</span></h1>
+	<img id="nameplate" class="off" src="images/player-name.png" />
+	<section id="player_name" class="off">
+		<form id="playerbutton" action="">
+			Input your name: <input id="PlayerName" name="PlayerName" type="text" size="50">
+			<input type="submit" value="Let's do this thing!">
+		</form>
+	</section>
+
+	<p id="name_label" class="off"></p>
+
+	<p id="instructions" class = "off">
+		Below are your pictures. Choose the one that best matches the tweet<br>and that will make the audience love you.
+	</p>
+	<section id="images" class="images"><p>Waiting for images...</p></section>
+
+	<section id="submit_button" class = "off">
+		<form name="submission" action="html_form_action.asp" method="get">
+			<input type="submit" value="DONE!">
+		</form>
+	</section>
+</div>
+
+<style>
+.images img {
+	width:200px;
+	cursor:pointer;
+}
+</style>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
+	<script>
+		jQuery(document).ready(function($){
+			var ws = new WebSocket('ws://localhost:8081');
+			ws.onmessage = function(data, flags) {
+				console.log(data);
+				if(data.data == "unlocked"){
+					ws.send(JSON.stringify({"message":"OK"}));
+				} else if (data.data == "winner"){
+					
+				} else if (data.data == "loser"){
+				
+				} else if (data.data == "reset"){
+					$('.images img').remove();
+					$('.images p').removeClass('off');
+				} else {
+					$('.images p').addClass('off');
+					var images = JSON.parse(data.data);
+					for(var i=0; i<images.length; i++){
+						$('.images').append('<img class="image-' + (i+1) + '" src="http://images.4chan.org/b/src/' + images[i] + '" alt="image # ' + i + '" />');
+					}
+					$('.images img').click(function(){
+						ws.send(JSON.stringify({"class":$(this).attr('class'), "src": $(this).attr('src')}));
+					});
+				}
+			};
+		});
+	</script>
+    <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')</script>
+  <!-- Asynchronous Google Analytics snippet. Change UA-XXXXX-X to be your site's ID.
+       mathiasbynens.be/notes/async-analytics-snippet -->
+  <script>
+    var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+  </script>
+</body>
+</html>

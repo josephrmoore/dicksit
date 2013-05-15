@@ -1,0 +1,93 @@
+body{
+	background-size: 1024px 768px;
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 1024px;
+	height: 768px;
+	margin: auto;
+/*	border-style: solid;
+border-width: 1px;*/
+text-align: center;
+font-family: 'Didact Gothic', sans-serif;
+background:#333;
+}
+
+#wrapper {
+	min-height:700px;
+	background:red;
+	border:10px solid #aaa;
+	margin-top: 20px;
+	background: url(../images/fade.png) repeat-x #ffe;
+}
+
+h1{
+	color: #58a13b;
+	margin-top: 48px;
+	margin-bottom: 6px;
+	font-size: 60px;
+	font-family:'Flavors', "Verdana", sans-serif;
+}
+
+p{
+	margin: 6px;
+	display: inline-block;
+	font-size: 18px;
+	width: 75%;
+}
+
+.off{
+	display: none;
+}
+
+section#player_name{
+	font-size: 14px;
+	margin-top: 6px;
+}
+
+img#nameplate{
+	position: relative;
+	top: 22px;
+}
+
+p#name_label{
+	position: relative;
+	top: -42px;
+	font-size: 24px;
+	color: white;
+}
+
+section#player_name{
+	position: relative;
+	top: 48px;
+	color: white;
+}
+
+section#images{
+	margin-top: 40px;
+	padding: 0 100px;
+	width: 824px;
+}
+
+#images p {
+	color:#333;
+	font-size:40px;
+	padding:20px;
+}
+
+section#submit_button{
+	margin-top: 20px;
+}
+
+img.palette{
+	vertical-align: middle;
+	display: inline-block;
+	padding: 6px;
+	max-width: 250px;
+	max-height: 250px;
+}
+
+.tm {
+	font-size: 70%;
+	color: #CC9;
+	vertical-align: super;
+}

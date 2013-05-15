@@ -1,13 +1,15 @@
 {
-  "name": "dicksit",
+  "name": "application-name",
   "version": "0.0.1",
-  "dependencies": {
-    "request": "2.21.0",
-    "ntwitter": "0.5.0",
-    "ws": "0.4.25"
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
   },
-  "engines": {
-    "node": "0.10.x",
-    "npm": "1.2.x"
+  "dependencies": {
+    "express": "3.2.4",
+    "jade": "*",
+    "request": "2.21.x",
+    "ntwitter": "0.5.x",
+    "ws": "0.4.x"
   }
 }
