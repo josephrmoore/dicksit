@@ -1,6 +1,5 @@
 body{
 	background-size: 1024px 768px;
-	background-image: url("../images/bg-podium.jpg");
 	background-repeat: no-repeat;
 	background-position: center;
 	width: 1024px;
@@ -9,14 +8,24 @@ body{
 /*	border-style: solid;
 border-width: 1px;*/
 text-align: center;
-font-family: 'Source Sans Pro', sans-serif;
+font-family: 'Didact Gothic', sans-serif;
+background:#333;
+}
+
+#wrapper {
+	min-height:700px;
+	background:red;
+	border:10px solid #aaa;
+	margin-top: 20px;
+	background: url(../images/fade.png) repeat-x #ffe;
 }
 
 h1{
-	color: white;
+	color: #58a13b;
 	margin-top: 48px;
 	margin-bottom: 6px;
-	font-size: 36px;
+	font-size: 60px;
+	font-family:'Flavors', "Verdana", sans-serif;
 }
 
 p{
@@ -60,7 +69,7 @@ section#images{
 }
 
 #images p {
-	color:#ccc;
+	color:#333;
 	font-size:40px;
 	padding:20px;
 }
