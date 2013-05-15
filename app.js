@@ -47,36 +47,45 @@ game_socket.on('connection', function(client) {
 	game = client;
 	game.on('message', function(message) {
 		console.log("game: " + message);
-        if(state==1){
-			twit.search(message, {}, function(err, data) {
-				var l = data.results.length;
-				var r = Math.floor(Math.random()*l);
-				tweet = {
-					"tweet" : JSON.stringify(data.results[r])
-				};
-				game.send(JSON.stringify(tweet));
-				// get threads from 4chan api, in callback - node.js curl? find?
-				state+=1;
-				for(var i=0; i<players_client.length; i++){
-					players_client[i].send("unlocked");
-				}
-			});
-		} else if (state == 2){
-			// wait
-		} else if (state == 3){
-			total_images += 1;
-			client.send(JSON.stringify({"channel":"image", "data" : message}));
-			if(total_images == players_client.length){
-				state++;				
-			}
-		} else if (state == 4){
+		console.log(state);
+		if(message == "reset"){
+			state = 1;
 			for(var i=0; i<players_client.length; i++){
-				if(message == "image-"+(i+1)){
-					players_client[i].send("winner");
-				} else {
-					players_client[i].send("loser");
+				players_client[i].send("reset");
+			}
+			getThreadImages();
+		} else {
+			if(state==1){
+				twit.search(message, {}, function(err, data) {
+					var l = data.results.length;
+					var r = Math.floor(Math.random()*l);
+					tweet = {
+						"tweet" : JSON.stringify(data.results[r])
+					};
+					game.send(JSON.stringify(tweet));
+					// get threads from 4chan api, in callback - node.js curl? find?
+					state+=1;
+					for(var i=0; i<players_client.length; i++){
+						players_client[i].send("unlocked");
+					}
+				});
+			} else if (state == 2){
+				// wait
+			} else if (state == 3){
+				total_images += 1;
+				client.send(JSON.stringify({"channel":"image", "data" : message}));
+				if(total_images == players_client.length){
+					state++;				
 				}
-			}	
+			} else if (state == 4){
+				for(var i=0; i<players_client.length; i++){
+					if(message == "image-"+(i+1)){
+						players_client[i].send("winner");
+					} else {
+						players_client[i].send("loser");
+					}
+				}	
+			}
 		}
     });
 });
@@ -86,19 +95,7 @@ player_socket.on('connection', function(client) {
 	for(var i=0; i<players_client.length; i++){
 		if(players_client[i] == client){
 			id = i;
-			var images = [];
-			var chosen_img = "";
-			var image_thread_index = Math.floor(Math.random()*image_threads.length);
-			request('http://api.4chan.org/b/res/'+ image_threads[image_thread_index].no +'.json', function (error, response, body) {
-				var thread = JSON.parse(body);
-				var total_posts = thread.posts.length;
-				for(var n=0; n<total_posts; n++){
-					if(thread.posts[n].tim && thread.posts[n].ext){
-						images.push(thread.posts[n].tim + thread.posts[n].ext);
-					}
-				}
-			});
-			players_client_images.push(images);
+			getThreadImages();
 		}
 	}
 	client.on('close',function(){
@@ -126,3 +123,21 @@ player_socket.on('connection', function(client) {
 		
     });
 });
+
+
+function getThreadImages(){
+	players_client_images = [];
+	var images = [];
+	var chosen_img = "";
+	var image_thread_index = Math.floor(Math.random()*image_threads.length);
+	request('http://api.4chan.org/b/res/'+ image_threads[image_thread_index].no +'.json', function (error, response, body) {
+		var thread = JSON.parse(body);
+		var total_posts = thread.posts.length;
+		for(var n=0; n<total_posts; n++){
+			if(thread.posts[n].tim && thread.posts[n].ext){
+				images.push(thread.posts[n].tim + thread.posts[n].ext);
+			}
+		}
+	});
+	players_client_images.push(images);
+}
