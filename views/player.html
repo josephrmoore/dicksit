@@ -74,6 +74,7 @@
 					}
 					$('.images img').click(function(){
 						ws.send(JSON.stringify({"class":$(this).attr('class'), "src": $(this).attr('src')}));
+						$('.images').html('<p>Your image was sent. But do you have what it takes to WIN this thing?</p>');
 					});
 				}
 			};
