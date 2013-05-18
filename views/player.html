@@ -54,7 +54,7 @@
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
 	<script>
 		jQuery(document).ready(function($){
-			var ws = new WebSocket('ws://localhost:8081');
+			var ws = new WebSocket('ws://ec2-54-245-155-20.us-west-2.compute.amazonaws.com:8081');
 			ws.onmessage = function(data, flags) {
 				console.log(data);
 				if(data.data == "unlocked"){
