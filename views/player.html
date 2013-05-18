@@ -69,6 +69,7 @@
 					$('.images img').remove();
 					$('.waiting').removeClass('off');
 					$('.sent').addClass('off');
+					ws.send('new images');
 				} else {
 					var images = data.data.split(',');
 					if($('.images img').length == 0){
@@ -79,6 +80,7 @@
 					$('.images img').click(function(){
 						ws.send(JSON.stringify({"class":$(this).attr('class'), "src": $(this).attr('src')}));
 						$('.images img').addClass('off');
+						$(this).removeClass('off');
 						$('.waiting').addClass('off');
 						$('.sent').removeClass('off');
 					});

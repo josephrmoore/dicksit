@@ -77,26 +77,23 @@ game_socket.on('connection', function(client) {
 			for(var i=0; i<players_client.length; i++){
 				players_client[i].send("reset");
 			}
-			getCatalog(function(){
-				getThreadImages(function(){
-					for(var i=0; i<players_client.length; i++){
-						players_client[i].send(players_client_images[i].images.toString());
-					}	
-				});
-			});
 		} else {
 			if(state==1){
 				twit.search(message, {}, function(err, data) {
-					var l = data.results.length;
-					var r = Math.floor(Math.random()*l);
-					tweet = {
-						"tweet" : JSON.stringify(data.results[r])
-					};
-					game.send(JSON.stringify(tweet));
-					// get threads from 4chan api, in callback - node.js curl? find?
-					state+=1;
-					for(var i=0; i<players_client.length; i++){
-						players_client[i].send("unlocked");
+					if(data){
+						var l = data.results.length;
+						var r = Math.floor(Math.random()*l);
+						if(data.results[r]){
+							tweet = {
+								"tweet" : JSON.stringify(data.results[r])
+							};
+						}
+						game.send(JSON.stringify(tweet));
+						// get threads from 4chan api, in callback - node.js curl? find?
+						state+=2;
+						for(var i=0; i<players_client.length; i++){
+							players_client[i].send("unlocked");
+						}
 					}
 				});
 			} else if (state == 2){
@@ -122,7 +119,7 @@ game_socket.on('connection', function(client) {
 player_socket.on('connection', function(client) {
 	players_client.push(client);
 	var id;
-	getThreadImages(function(){
+	getThreadImages("empty", function(){
 		for(var i=0; i<players_client.length; i++){
 			if(players_client[i] == client){
 				client.send(players_client_images[i].images.toString());
@@ -143,13 +140,33 @@ player_socket.on('connection', function(client) {
 		if(state==1){
 			// wait
 		} else if (state == 2){
-			state += 1;
+			// wait
 		} else if (state == 3){
 			game.send(message);
 		} else if (state == 4){
 			
 		}
-		
+		if(message == "new images"){
+			if(players_client_images.length < 1){
+				getCatalog(function(){
+					getThreadImages("empty", function(){
+						for(var i=0; i<players_client.length; i++){
+							if(players_client[i] == client && players_client_images[i]){
+								client.send(players_client_images[i].images.toString());
+							}
+						}	
+					});
+				});
+			} else {
+				getThreadImages("empty", function(){
+					for(var i=0; i<players_client.length; i++){
+						if(players_client[i] == client && players_client_images[i]){
+							client.send(players_client_images[i].images.toString());
+						}
+					}	
+				});
+			}
+		}
     });
 });
 
@@ -176,23 +193,25 @@ function getCatalog(fx){
 	})
 }
 
-function getThreadImages(fx){
+function getThreadImages(i, fx){
 	var images = {
 		"images" : []
 	};
 	var chosen_img = "";
 	var image_thread_index = Math.floor(Math.random()*image_threads.length);
 	request('http://api.4chan.org/b/res/'+ image_threads[image_thread_index].no +'.json', function (error, response, body) {
-		var thread = JSON.parse(body);
-		var total_posts = thread.posts.length;
-		for(var n=0; n<total_posts; n++){
-			if(thread.posts[n].tim && thread.posts[n].ext){
-				images.images.push(thread.posts[n].tim + thread.posts[n].ext);
+		if(body){
+			var thread = JSON.parse(body);
+			var total_posts = thread.posts.length;
+			for(var n=0; n<total_posts; n++){
+				if(thread.posts[n].tim && thread.posts[n].ext){
+					images.images.push(thread.posts[n].tim + thread.posts[n].ext);
+				}
 			}
-		}
-		players_client_images.push(images);
-		if(fx){
-			fx();
+			players_client_images.push(images);
+			if(fx){
+				fx(i);
+			}
 		}
 	});
 }
