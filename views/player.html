@@ -80,6 +80,7 @@
 					$('.images img').click(function(){
 						ws.send(JSON.stringify({"class":$(this).attr('class'), "src": $(this).attr('src')}));
 						$('.images img').addClass('off');
+						$(this).removeClass('off');
 						$('.waiting').addClass('off');
 						$('.sent').removeClass('off');
 					});
