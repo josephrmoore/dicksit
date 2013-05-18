@@ -69,6 +69,7 @@
 					$('.images img').remove();
 					$('.waiting').removeClass('off');
 					$('.sent').addClass('off');
+					ws.send('new images');
 				} else {
 					var images = data.data.split(',');
 					if($('.images img').length == 0){
